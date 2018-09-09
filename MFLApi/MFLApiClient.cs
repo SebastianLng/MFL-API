@@ -53,6 +53,17 @@ namespace MFLApi
             return await Get<MFLInjuriesResponseBody>(url);
         }
 
+        public async Task<MFLTopOwnsResponseBody> GetTopOwns(int? week = null)
+        {
+            var url = $"{baseUrl}/{year}/export?TYPE=topOwns&JSON=1";
+            if (week.HasValue)
+            {
+                url += "&W=" + week.Value;
+            }
+
+            return await Get<MFLTopOwnsResponseBody>(url);
+        }
+
         private async Task<TResponse> Get<TResponse>(string url)
         {
             using (HttpClient httpClient = new HttpClient())

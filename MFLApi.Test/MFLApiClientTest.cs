@@ -22,10 +22,18 @@ namespace MFLApi.Test
             var injuries = await mflApiClient.GetInjuries();
             Assert.IsNotNull(injuries);
 
-            var players = await mflApiClient.GetPlayers(injuries.injuries.injury.Select(i => i.id).ToList());
+            var players = await mflApiClient.GetPlayers(injuries.GetMFLInjuries().Select(i => i.id).ToList());
             Assert.IsNotNull(players);
 
-            Assert.AreEqual(injuries.injuries.injury.Length, players.players.player.Length);
+            Assert.AreEqual(injuries.GetMFLInjuries().Length, players.GetMFLPlayers().Length);
+        }
+
+        [TestMethod]
+        public async Task GetTopOwns()
+        {
+            var topOwns = await mflApiClient.GetTopOwns();
+            Assert.IsNotNull(topOwns);
+            Assert.IsNotNull(topOwns.GetPlayers());
         }
     }
 }
