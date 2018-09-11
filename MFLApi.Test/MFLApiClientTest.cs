@@ -33,7 +33,7 @@ namespace MFLApi.Test
         {
             var topOwns = await mflApiClient.GetTopOwns();
             Assert.IsNotNull(topOwns);
-            Assert.IsNotNull(topOwns.GetPlayers());
+            Assert.IsNotNull(topOwns.GetMFLPlayers());
         }
     }
 }

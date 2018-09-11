@@ -4,7 +4,7 @@
     {
         public MFLTopOwnsResponse topOwns { get; set; }
 
-        public MFLTopOwnsPlayer[] GetPlayers()
+        public MFLTopOwnsPlayer[] GetMFLPlayers()
         {
             return topOwns?.player;
         }
