@@ -25,7 +25,7 @@ namespace MFLApi.Test
             var players = await mflApiClient.GetPlayers(injuries.GetMFLInjuries().Select(i => i.id).ToList());
             Assert.IsNotNull(players);
 
-            Assert.AreEqual(injuries.GetMFLInjuries().Length, players.GetMFLPlayers().Length);
+            Assert.AreEqual(injuries.GetMFLInjuries().Count, players.GetMFLPlayers().Count);
         }
 
         [TestMethod]
@@ -34,6 +34,15 @@ namespace MFLApi.Test
             var topOwns = await mflApiClient.GetTopOwns();
             Assert.IsNotNull(topOwns);
             Assert.IsNotNull(topOwns.GetMFLPlayers());
+        }
+
+        [TestMethod]
+        public async Task GetNFLSchedule()
+        {
+            var schedule = await mflApiClient.GetNFLSchedule();
+            Assert.IsNotNull(schedule);
+            Assert.IsNotNull(schedule?.nflSchedule?.matchup);
+            Assert.AreEqual(16, schedule.nflSchedule.matchup.Count);
         }
     }
 }

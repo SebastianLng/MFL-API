@@ -1,10 +1,12 @@
-﻿namespace MFLApi.Model
+﻿using System.Collections.Generic;
+
+namespace MFLApi.Model
 {
     public class MFLTopOwnsResponseBody : MFLResponseBody
     {
         public MFLTopOwnsResponse topOwns { get; set; }
 
-        public MFLTopOwnsPlayer[] GetMFLPlayers()
+        public List<MFLTopOwnsPlayer> GetMFLPlayers()
         {
             return topOwns?.player;
         }
@@ -14,7 +16,7 @@
     {
         public int week { get; set; }
 
-        public MFLTopOwnsPlayer[] player { get; set; }
+        public List<MFLTopOwnsPlayer> player { get; set; }
     }
 
     public class MFLTopOwnsPlayer

@@ -64,6 +64,17 @@ namespace MFLApi
             return await Get<MFLTopOwnsResponseBody>(url);
         }
 
+        public async Task<MFLNFLScheduleResponseBody> GetNFLSchedule(int? week = null)
+        {
+            var url = $"{baseUrl}/{year}/export?TYPE=nflSchedule&JSON=1";
+            if (week.HasValue)
+            {
+                url += "&W=" + week.Value;
+            }
+
+            return await Get<MFLNFLScheduleResponseBody>(url);
+        }
+
         private async Task<TResponse> Get<TResponse>(string url)
         {
             using (HttpClient httpClient = new HttpClient())

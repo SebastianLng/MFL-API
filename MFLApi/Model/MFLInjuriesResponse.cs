@@ -1,10 +1,12 @@
-﻿namespace MFLApi.Model.Injuries
+﻿using System.Collections.Generic;
+
+namespace MFLApi.Model.Injuries
 {
     public class MFLInjuriesResponseBody : MFLResponseBody
     {
         public MFLInjuriesResponse injuries { get; set; }
 
-        public MFLInjury[] GetMFLInjuries()
+        public List<MFLInjury> GetMFLInjuries()
         {
             return injuries?.injury;
         }
@@ -16,7 +18,7 @@
 
         public int week { get; set; }
 
-        public MFLInjury[] injury { get; set; }
+        public List<MFLInjury> injury { get; set; }
     }
 
     public class MFLInjury

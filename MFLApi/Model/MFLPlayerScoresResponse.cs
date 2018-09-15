@@ -1,10 +1,12 @@
-﻿namespace MFLApi.Model
+﻿using System.Collections.Generic;
+
+namespace MFLApi.Model
 {
     public class MFLPlayerScoresResponseBody : MFLResponseBody
     {
         public MFLPlayerScoresResponse playerScores { get; set; }
 
-        public MFLPlayerScore[] GetMFLPlayerScores()
+        public List<MFLPlayerScore> GetMFLPlayerScores()
         {
             return playerScores?.playerScore;
         }
@@ -14,7 +16,7 @@
     {
         public string week { get; set; }
 
-        public MFLPlayerScore[] playerScore { get; set; }
+        public List<MFLPlayerScore> playerScore { get; set; }
     }
 
     public class MFLPlayerScore

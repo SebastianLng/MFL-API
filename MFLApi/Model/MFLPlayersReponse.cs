@@ -1,10 +1,12 @@
-﻿namespace MFLApi.Model.Player
+﻿using System.Collections.Generic;
+
+namespace MFLApi.Model.Player
 {
     public class MFLPlayersReponseBody : MFLResponseBody
     {
         public MFLPlayersResponse players { get; set; }
 
-        public MFLPlayer[] GetMFLPlayers()
+        public List<MFLPlayer> GetMFLPlayers()
         {
             return players?.player;
         }
@@ -14,7 +16,7 @@
     {
         public long timestamp { get; set; }
 
-        public MFLPlayer[] player { get; set; }
+        public List<MFLPlayer> player { get; set; }
     }
 
     public class MFLPlayer
