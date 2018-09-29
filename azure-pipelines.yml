@@ -16,7 +16,7 @@ steps:
   displayName: 'Unit testing'
 - task: PublishTestResults@2
   inputs:
-    testRunner: VSTest
+    testRunner: VSTest@2
     testResultsFiles: '**/*.trx'
 - task: PublishCodeCoverageResults@1
   inputs:
