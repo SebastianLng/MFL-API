@@ -40,11 +40,47 @@ namespace Slng.MFLApi
             return leagueResponse;
         }
 
-        public async Task<MFLPlayerScoresResponseBody> GetPlayerScoresForPosition(string position, int league, int count)
+        public async Task<MFLPlayerScoresResponseBody> GetPlayerScores(int league, int limit, string position = null, bool yearToDate = false)
         {
             string baseUrl = await GetLeagueHost(league);
-            position = WebUtility.UrlEncode(position);
-            return await Get<MFLPlayerScoresResponseBody>($"{baseUrl}/{year}/export?TYPE=playerScores&L={league}&W=YTD&POSITION={position}&RULES=1&COUNT={count}&JSON=1");
+
+            var url = $"{baseUrl}/{year}/export?TYPE=playerScores&L={league}&COUNT={limit}&JSON=1";
+
+            if (!string.IsNullOrEmpty(position))
+            {
+                position = WebUtility.UrlEncode(position);
+                url += "&POSITION=" + position;
+            }
+
+            if (yearToDate)
+            {
+                url += "&W=YTD";
+            }
+
+
+            return await Get<MFLPlayerScoresResponseBody>(url);
+        }
+
+        public async Task<MFLPlayerScoresResponseBody> GetPlayerScoresByWeek(int league, int limit, int week, string position = null, bool useLeagueRules = false)
+        {
+            string baseUrl = await GetLeagueHost(league);
+
+            var url = $"{baseUrl}/{year}/export?TYPE=playerScores&L={league}&COUNT={limit}&JSON=1";
+
+            if (!string.IsNullOrEmpty(position))
+            {
+                position = WebUtility.UrlEncode(position);
+                url += "&POSITION=" + position;
+            }
+
+            url += "&W=" + week;
+
+            if (useLeagueRules)
+            {
+                url += "&RULES=1";
+            }
+
+            return await Get<MFLPlayerScoresResponseBody>(url);
         }
 
         public async Task<MFLPlayersReponseBody> GetPlayers()

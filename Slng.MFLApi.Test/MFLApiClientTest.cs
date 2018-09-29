@@ -20,6 +20,36 @@ namespace Slng.MFLApi.Test
         }
 
         [TestMethod]
+        public async Task GetPlayerScores()
+        {
+            var playerScores = await mflApiClient.GetPlayerScores(testLeague, 50);
+            Assert.IsNotNull(playerScores);
+            Assert.AreEqual(50, playerScores.GetMFLPlayerScores()?.Count);
+        }
+
+        [TestMethod]
+        public async Task GetPlayerScores_Position()
+        {
+            var playerScoresQB = await mflApiClient.GetPlayerScores(testLeague, 50, "QB");
+            var playerScoresWR = await mflApiClient.GetPlayerScores(testLeague, 50, "WR");
+            Assert.IsNotNull(playerScoresQB);
+            Assert.IsNotNull(playerScoresWR);
+
+            foreach (var qbScore in playerScoresQB.GetMFLPlayerScores())
+            {
+                Assert.IsFalse(playerScoresWR.GetMFLPlayerScores().Any(score => score.id == qbScore.id));
+            }
+        }
+
+        [TestMethod]
+        public async Task GetPlayerScores_Week()
+        {
+            var playerScores = await mflApiClient.GetPlayerScoresByWeek(testLeague, 50, 1);
+            Assert.IsNotNull(playerScores);
+            Assert.AreEqual("1", playerScores.playerScores.week);
+        }
+
+        [TestMethod]
         public async Task GetFranchiseRoster()
         {
             var roster = await mflApiClient.GetFranchiseRoster(testLeague, testFranchise);
