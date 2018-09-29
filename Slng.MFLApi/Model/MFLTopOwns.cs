@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MFLApi.Model
+namespace Slng.MFLApi.Model
 {
     public class MFLTopOwnsResponseBody : MFLResponseBody
     {

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2019
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MFLApi", "MFLApi\MFLApi.csproj", "{CCAB4CDA-84B9-4A82-8493-FE53F32EEDA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slng.MFLApi", "Slng.MFLApi\Slng.MFLApi.csproj", "{CCAB4CDA-84B9-4A82-8493-FE53F32EEDA5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MFLApi.Test", "MFLApi.Test\MFLApi.Test.csproj", "{3171FC50-8ED5-42D5-BF4C-C5CA83DD1F76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slng.MFLApi.Test", "Slng.MFLApi.Test\Slng.MFLApi.Test.csproj", "{3171FC50-8ED5-42D5-BF4C-C5CA83DD1F76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

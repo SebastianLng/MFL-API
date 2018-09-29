@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MFLApi.Model.Player
+namespace Slng.MFLApi.Model
 {
     public class MFLPlayersReponseBody : MFLResponseBody
     {

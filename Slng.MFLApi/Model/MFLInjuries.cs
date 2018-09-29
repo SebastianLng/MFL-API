@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MFLApi.Model.Injuries
+namespace Slng.MFLApi.Model
 {
     public class MFLInjuriesResponseBody : MFLResponseBody
     {

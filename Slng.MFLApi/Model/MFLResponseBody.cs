@@ -1,4 +1,4 @@
-﻿namespace MFLApi.Model
+﻿namespace Slng.MFLApi.Model
 {
     public class MFLResponseBody
     {
