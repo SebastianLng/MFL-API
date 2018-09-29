@@ -6,13 +6,33 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- script: dotnet build --configuration $(buildConfiguration)
+  displayName: 'dotnet build $(buildConfiguration)'
 - script: |
-    dotnet build --configuration $(buildConfiguration)
-    dotnet test dotnetcore-tests --configuration $(buildConfiguration) --logger trx
-    dotnet publish --configuration $(buildConfiguration) --output $BUILD_ARTIFACTSTAGINGDIRECTORY
+    mkdir $(Build.SourcesDirectory)\results
+    dotnet test --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura  Slng.MFLApi.Test
+    dotnet test --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:MergeWtih=$(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml Slng.MFLApi.Test
+    copy $(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml $(Build.SourcesDirectory)\results
+    dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 4.0.0-rc5
+    .\reportgenerator "-reports:$(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml" "-targetdir:results" "-reporttypes:HTMLInline;HTMLChart"
+  displayName: 'Unit testing'
 - task: PublishTestResults@2
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
+- task: PublishCodeCoverageResults@1
+  inputs:
+    summaryFileLocation: $(Build.SourcesDirectory)\results\coverage.cobertura.xml
+    reportDirectory: $(Build.SourcesDirectory)\results
+    codecoverageTool: cobertura
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: publish
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    projects: Slng.MFLApi/Slng.MFLApi.csproj
+    publishWebProjects: false
+    modifyOutputPath: true
+    zipAfterPublish: true
 
 - task: PublishBuildArtifacts@1
