@@ -14,7 +14,7 @@ steps:
     dotnet test --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:MergeWtih=$(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml Slng.MFLApi.Test
     copy $(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml $(Build.SourcesDirectory)\results
     dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 4.0.0-rc5
-    .\reportgenerator "-reports:$(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml" "-targetdir:results" "-reporttypes:HTMLInline;HTMLChart"
+    reportgenerator "-reports:$(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml" "-targetdir:results" "-reporttypes:HTMLInline;HTMLChart"
   displayName: 'Unit testing'
 - task: PublishTestResults@2
   inputs:
