@@ -1,6 +1,6 @@
 # MFL-API for C#
 
-A very simple C# wrapper for parts of the [myfantasyleague.com API](https://www71.myfantasyleague.com/2018/api_info?STATE=details).
+A very simple C# client for parts of the [myfantasyleague.com API](https://www71.myfantasyleague.com/2018/api_info?STATE=details).
 
 ## Supported Request Types
 
