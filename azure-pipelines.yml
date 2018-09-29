@@ -9,7 +9,7 @@ steps:
   displayName: 'dotnet build $(buildConfiguration)'
 - script: |
     mkdir $(Build.SourcesDirectory)\results
-    dotnet test --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura Slng.MFLApi.Test
+    dotnet test --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura  Slng.MFLApi.Test
     copy $(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml $(Build.SourcesDirectory)\results
     dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 4.0.0-rc5
     .\reportgenerator "-reports:$(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml" "-targetdir:results" "-reporttypes:HTMLInline;HTMLChart"
