@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Sebastian Lang</Authors>
+    <Company>Slng</Company>
+    <Description>A very simple C# client for the myfantasyleague.com API.</Description>
+    <PackageProjectUrl>https://github.com/SebastianLng/MFL-API</PackageProjectUrl>
+    <PackageTags>MFL myfantasyleague</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
