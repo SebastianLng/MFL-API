@@ -17,7 +17,8 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    contents: $(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml
+    sourceFolder: $(Build.SourcesDirectory)\Slng.MFLApi.Test\
+    contents: coverage.cobertura.xml
     targetFolder: $(Build.SourcesDirectory)\results
 
 - task: PublishTestResults@2
