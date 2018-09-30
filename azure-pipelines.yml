@@ -1,19 +1,41 @@
+trigger:
+- master
+- develop
+
 pool:
   vmImage: 'VS2017-Win2016'
 
 variables:
   buildConfiguration: 'Release'
+  Major: '0'
+  Minor: '0'
+  Patch: '1'
 
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Create NuGet package'
+  inputs:
+    command: pack
+    packagesToPack: '**/Slng.MFLApi.csproj'
+    packDestination: '$(Build.ArtifactStagingDirectory)'
+    configuration: $(buildConfiguration)
+    versioningScheme: byPrereleaseNumber
+    majorVersion: '$(Major)'
+    minorVersion: '$(Minor)'
+    patchVersion: '$(Patch)'
   
 - script: |
     mkdir $(Build.SourcesDirectory)\results
     dotnet test --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura  Slng.MFLApi.Test
+  displayName: 'Unit testing'
+
+- script: |
     dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 4.0.0-rc4
     .\reportgenerator "-reports:$(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml" "-targetdir:results" "-reporttypes:HTMLInline;HTMLChart"
-  displayName: 'Unit testing'
+  displayName: 'Testreport generation'
 
 - task: CopyFiles@2
   inputs:
@@ -41,4 +63,10 @@ steps:
     modifyOutputPath: true
     zipAfterPublish: true
 
-- task: PublishBuildArtifacts@1
+- task: NuGetCommand@2
+  displayName: 'Publish prerelease to nuget.org'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  inputs:
+    command: push
+    nuGetFeedType: external
+    publishFeedCredentials: 'MFL_NuGet_org'
