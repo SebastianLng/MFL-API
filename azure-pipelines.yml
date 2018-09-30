@@ -1,4 +1,3 @@
-
 pool:
   vmImage: 'VS2017-Win2016'
 
@@ -8,18 +7,25 @@ variables:
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
+  
 - script: |
     mkdir $(Build.SourcesDirectory)\results
     dotnet test --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura  Slng.MFLApi.Test
-    dotnet test --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:MergeWtih=$(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml Slng.MFLApi.Test
-    copy $(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml $(Build.SourcesDirectory)\results
-    dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 4.0.0-rc5
+    dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 4.0.0-rc4
     .\reportgenerator "-reports:$(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml" "-targetdir:results" "-reporttypes:HTMLInline;HTMLChart"
   displayName: 'Unit testing'
+
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: $(Build.SourcesDirectory)\Slng.MFLApi.Test\
+    contents: coverage.cobertura.xml
+    targetFolder: $(Build.SourcesDirectory)\results
+
 - task: PublishTestResults@2
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
+
 - task: PublishCodeCoverageResults@1
   inputs:
     summaryFileLocation: $(Build.SourcesDirectory)\results\coverage.cobertura.xml
