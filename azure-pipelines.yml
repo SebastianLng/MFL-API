@@ -8,8 +8,8 @@ pool:
 variables:
   buildConfiguration: 'Release'
   Major: '0'
-  Minor: '0'
-  Patch: '1'
+  Minor: '1'
+  Patch: '0'
 
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
@@ -33,7 +33,7 @@ steps:
   displayName: 'Unit testing'
 
 - script: |
-    dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 4.0.0-rc4
+    dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 4.0.12
     .\reportgenerator "-reports:$(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml" "-targetdir:results" "-reporttypes:HTMLInline;HTMLChart"
   displayName: 'Testreport generation'
 
