@@ -14,18 +14,6 @@ variables:
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
-
-- task: DotNetCoreCLI@2
-  displayName: 'Create NuGet package'
-  inputs:
-    command: pack
-    packagesToPack: '**/Slng.MFLApi.csproj'
-    packDestination: '$(Build.ArtifactStagingDirectory)'
-    configuration: $(buildConfiguration)
-    versioningScheme: byPrereleaseNumber
-    majorVersion: '$(Major)'
-    minorVersion: '$(Minor)'
-    patchVersion: '$(Patch)'
   
 - script: |
     mkdir $(Build.SourcesDirectory)\results
@@ -53,6 +41,18 @@ steps:
     summaryFileLocation: $(Build.SourcesDirectory)\results\coverage.cobertura.xml
     reportDirectory: $(Build.SourcesDirectory)\results
     codecoverageTool: cobertura
+
+- task: DotNetCoreCLI@2
+  displayName: 'Create NuGet package'
+  inputs:
+    command: pack
+    packagesToPack: '**/Slng.MFLApi.csproj'
+    packDestination: '$(Build.ArtifactStagingDirectory)'
+    configuration: $(buildConfiguration)
+    versioningScheme: byPrereleaseNumber
+    majorVersion: '$(Major)'
+    minorVersion: '$(Minor)'
+    patchVersion: '$(Patch)'
 
 - task: DotNetCoreCLI@2
   inputs:
