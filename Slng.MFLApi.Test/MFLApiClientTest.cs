@@ -8,7 +8,7 @@ namespace Slng.MFLApi.Test
     [TestClass]
     public class MFLApiClientTest
     {
-        private const int testLeague = 35465;
+        private const int testLeague = 63018;
         private const string testFranchise = "0003";
         private readonly MFLApiClient mflApiClient = new MFLApiClient(DateTime.Now.Year);
 
