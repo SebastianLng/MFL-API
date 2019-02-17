@@ -83,15 +83,15 @@ namespace Slng.MFLApi
             return await Get<MFLPlayerScoresResponseBody>(url);
         }
 
-        public async Task<MFLPlayersReponseBody> GetPlayers()
+        public async Task<MFLPlayersReponseBody> GetPlayers(bool details = false)
         {
-            return await Get<MFLPlayersReponseBody>($"{baseApiUrl}/{year}/export?TYPE=players&JSON=1");
+            return await Get<MFLPlayersReponseBody>($"{baseApiUrl}/{year}/export?TYPE=players&DETAILS={ (details ? 1 : 0 )}&JSON=1");
         }
 
-        public async Task<MFLPlayersReponseBody> GetPlayers(IList<int> playerIds)
+        public async Task<MFLPlayersReponseBody> GetPlayers(IList<int> playerIds, bool details = false)
         {
             string encodedPlayers = WebUtility.UrlEncode(string.Join(",", playerIds));
-            return await Get<MFLPlayersReponseBody>($"{baseApiUrl}/{year}/export?TYPE=players&PLAYERS={encodedPlayers}&JSON=1");
+            return await Get<MFLPlayersReponseBody>($"{baseApiUrl}/{year}/export?TYPE=players&PLAYERS={encodedPlayers}&DETAILS={ (details ? 1 : 0)}&JSON=1");
         }
 
         public async Task<MFLFranchiseRosterResponseBody> GetFranchiseRoster(int league, string franchiseId)
