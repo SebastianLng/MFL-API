@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Slng.MFLApi.Utils;
+using System.Collections.Generic;
 
 namespace Slng.MFLApi.Model
 {
@@ -16,6 +18,7 @@ namespace Slng.MFLApi.Model
     {
         public string week { get; set; }
 
+        [JsonConverter(typeof(ArrayOrSingleConverter<MFLPlayerScore>))]
         public List<MFLPlayerScore> playerScore { get; set; }
     }
 

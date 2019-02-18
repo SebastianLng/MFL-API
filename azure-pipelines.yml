@@ -8,24 +8,12 @@ pool:
 variables:
   buildConfiguration: 'Release'
   Major: '0'
-  Minor: '0'
-  Patch: '1'
+  Minor: '1'
+  Patch: '0'
 
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
-
-- task: DotNetCoreCLI@2
-  displayName: 'Create NuGet package'
-  inputs:
-    command: pack
-    packagesToPack: '**/Slng.MFLApi.csproj'
-    packDestination: '$(Build.ArtifactStagingDirectory)'
-    configuration: $(buildConfiguration)
-    versioningScheme: byPrereleaseNumber
-    majorVersion: '$(Major)'
-    minorVersion: '$(Minor)'
-    patchVersion: '$(Patch)'
   
 - script: |
     mkdir $(Build.SourcesDirectory)\results
@@ -33,7 +21,7 @@ steps:
   displayName: 'Unit testing'
 
 - script: |
-    dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 4.0.0-rc4
+    dotnet tool install dotnet-reportgenerator-globaltool --tool-path . --version 4.0.12
     .\reportgenerator "-reports:$(Build.SourcesDirectory)\Slng.MFLApi.Test\coverage.cobertura.xml" "-targetdir:results" "-reporttypes:HTMLInline;HTMLChart"
   displayName: 'Testreport generation'
 
@@ -53,6 +41,18 @@ steps:
     summaryFileLocation: $(Build.SourcesDirectory)\results\coverage.cobertura.xml
     reportDirectory: $(Build.SourcesDirectory)\results
     codecoverageTool: cobertura
+
+- task: DotNetCoreCLI@2
+  displayName: 'Create NuGet package'
+  inputs:
+    command: pack
+    packagesToPack: '**/Slng.MFLApi.csproj'
+    packDestination: '$(Build.ArtifactStagingDirectory)'
+    configuration: $(buildConfiguration)
+    versioningScheme: byPrereleaseNumber
+    majorVersion: '$(Major)'
+    minorVersion: '$(Minor)'
+    patchVersion: '$(Patch)'
 
 - task: DotNetCoreCLI@2
   inputs:

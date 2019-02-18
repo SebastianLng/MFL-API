@@ -8,9 +8,10 @@ namespace Slng.MFLApi.Test
     [TestClass]
     public class MFLApiClientTest
     {
-        private const int testLeague = 35465;
+        private const int testLeague = 63018;
         private const string testFranchise = "0003";
         private readonly MFLApiClient mflApiClient = new MFLApiClient(DateTime.Now.Year);
+        private readonly MFLApiClient lastYearMflApiClient = new MFLApiClient(DateTime.Now.Year - 1);
 
         [TestMethod]
         public async Task GetLeague()
@@ -24,18 +25,20 @@ namespace Slng.MFLApi.Test
         {
             var playerScores = await mflApiClient.GetPlayerScores(testLeague, 50);
             Assert.IsNotNull(playerScores);
-            Assert.AreEqual(50, playerScores.GetMFLPlayerScores()?.Count);
+            Assert.IsTrue(playerScores.GetMFLPlayerScores()?.Count <= 50);
         }
 
         [TestMethod]
         public async Task GetPlayerScores_Position()
         {
-            var playerScoresQB = await mflApiClient.GetPlayerScores(testLeague, 50, "QB");
-            var playerScoresWR = await mflApiClient.GetPlayerScores(testLeague, 50, "WR");
+            var playerScoresQB = await lastYearMflApiClient.GetPlayerScores(testLeague, 50, "QB");
+            var playerScoresWR = await lastYearMflApiClient.GetPlayerScores(testLeague, 50, "WR");
             Assert.IsNotNull(playerScoresQB);
             Assert.IsNotNull(playerScoresWR);
 
-            foreach (var qbScore in playerScoresQB.GetMFLPlayerScores())
+            var qbScores = playerScoresQB.GetMFLPlayerScores();
+
+            foreach (var qbScore in qbScores)
             {
                 Assert.IsFalse(playerScoresWR.GetMFLPlayerScores().Any(score => score.id == qbScore.id));
             }
@@ -90,6 +93,42 @@ namespace Slng.MFLApi.Test
             Assert.IsNotNull(schedule);
             Assert.IsNotNull(schedule?.nflSchedule?.matchup);
             Assert.IsTrue(schedule.nflSchedule.matchup.Count > 0);
+        }
+
+        [TestMethod]
+        public async Task GetPlayersSimple()
+        {
+            var injuries = await mflApiClient.GetInjuries();
+            Assert.IsNotNull(injuries.GetMFLInjuries());
+
+            var players = await mflApiClient.GetPlayers(injuries.GetMFLInjuries().Select(i => i.id).ToList());
+            Assert.IsNotNull(players);
+
+            // No details loaded
+            foreach (var p in players.players.player)
+            {
+                Assert.IsTrue(string.IsNullOrEmpty(p.college));
+            }
+
+            Assert.AreEqual(injuries.GetMFLInjuries().Count, players.GetMFLPlayers().Count);
+        }
+
+        [TestMethod]
+        public async Task GetPlayersDetails()
+        {
+            var injuries = await mflApiClient.GetInjuries();
+            Assert.IsNotNull(injuries.GetMFLInjuries());
+
+            var players = await mflApiClient.GetPlayers(injuries.GetMFLInjuries().Select(i => i.id).ToList(), true);
+            Assert.IsNotNull(players);
+
+            // details loaded
+            foreach (var p in players.players.player)
+            {
+                Assert.IsFalse(string.IsNullOrEmpty(p.college));
+            }
+
+            Assert.AreEqual(injuries.GetMFLInjuries().Count, players.GetMFLPlayers().Count);
         }
     }
 }
