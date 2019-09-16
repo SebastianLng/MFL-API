@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,6 +27,14 @@ namespace Slng.MFLApi.Test
             var playerScores = await mflApiClient.GetPlayerScores(testLeague, 50);
             Assert.IsNotNull(playerScores);
             Assert.IsTrue(playerScores.GetMFLPlayerScores()?.Count <= 50);
+        }
+
+        [TestMethod]
+        public async Task GetPlayerScores_Single()
+        {
+            var playerScores = await mflApiClient.GetPlayerScores(testLeague, 1);
+            Assert.IsNotNull(playerScores);
+            Assert.IsTrue(playerScores.GetMFLPlayerScores()?.Count <= 1);
         }
 
         [TestMethod]
@@ -114,6 +123,26 @@ namespace Slng.MFLApi.Test
         }
 
         [TestMethod]
+        public async Task GetPlayersSimple_Single()
+        {
+            var injuries = await mflApiClient.GetInjuries();
+            Assert.IsNotNull(injuries.GetMFLInjuries());
+
+            List<int> playerInput = new List<int>() { injuries.GetMFLInjuries().Select(i => i.id).First() };
+
+            var players = await mflApiClient.GetPlayers(playerInput);
+            Assert.IsNotNull(players);
+
+            // No details loaded
+            foreach (var p in players.players.player)
+            {
+                Assert.IsTrue(string.IsNullOrEmpty(p.college));
+            }
+
+            Assert.AreEqual(playerInput.Count, players.GetMFLPlayers().Count);
+        }
+
+        [TestMethod]
         public async Task GetPlayersDetails()
         {
             var injuries = await mflApiClient.GetInjuries();
@@ -129,6 +158,25 @@ namespace Slng.MFLApi.Test
             }
 
             Assert.AreEqual(injuries.GetMFLInjuries().Count, players.GetMFLPlayers().Count);
+        }
+
+        [TestMethod]
+        public async Task GetPlayersDetails_Single()
+        {
+            var injuries = await mflApiClient.GetInjuries();
+            Assert.IsNotNull(injuries.GetMFLInjuries());
+
+            List<int> playerInput = new List<int>() { injuries.GetMFLInjuries().Select(i => i.id).First() };
+            var players = await mflApiClient.GetPlayers(playerInput, true);
+            Assert.IsNotNull(players);
+
+            // details loaded
+            foreach (var p in players.players.player)
+            {
+                Assert.IsFalse(string.IsNullOrEmpty(p.college));
+            }
+
+            Assert.AreEqual(playerInput.Count, players.GetMFLPlayers().Count);
         }
     }
 }
