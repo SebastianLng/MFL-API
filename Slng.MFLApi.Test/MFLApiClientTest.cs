@@ -29,6 +29,14 @@ namespace Slng.MFLApi.Test
         }
 
         [TestMethod]
+        public async Task GetPlayerScores_Single()
+        {
+            var playerScores = await mflApiClient.GetPlayerScores(testLeague, 1);
+            Assert.IsNotNull(playerScores);
+            Assert.IsTrue(playerScores.GetMFLPlayerScores()?.Count <= 1);
+        }
+
+        [TestMethod]
         public async Task GetPlayerScores_Position()
         {
             var playerScoresQB = await lastYearMflApiClient.GetPlayerScores(testLeague, 50, "QB");
@@ -49,7 +57,7 @@ namespace Slng.MFLApi.Test
         {
             var playerScores = await mflApiClient.GetPlayerScoresByWeek(testLeague, 50, 1);
             Assert.IsNotNull(playerScores);
-            Assert.AreEqual("1", playerScores.playerScores.week);
+            Assert.AreEqual(1, playerScores.playerScores.week);
         }
 
         [TestMethod]

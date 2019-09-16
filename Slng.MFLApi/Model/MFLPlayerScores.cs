@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
-using Slng.MFLApi.Utils;
+﻿using Slng.MFLApi.Converter;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Slng.MFLApi.Model
 {
@@ -16,9 +16,9 @@ namespace Slng.MFLApi.Model
 
     public class MFLPlayerScoresResponse
     {
-        public string week { get; set; }
+        public int week { get; set; }
 
-        [JsonConverter(typeof(ArrayOrSingleConverter<MFLPlayerScore>))]
+        [JsonConverter(typeof(ArrayOrSingleConverter))]
         public List<MFLPlayerScore> playerScore { get; set; }
     }
 

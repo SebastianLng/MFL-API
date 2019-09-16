@@ -11,7 +11,7 @@ namespace Slng.MFLApi.Model
     {
         public List<MFLNFLMatchup> matchup { get; set; }
 
-        public string week { get; set; }
+        public int week { get; set; }
     }
 
     public class MFLNFLMatchup

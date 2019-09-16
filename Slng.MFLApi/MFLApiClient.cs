@@ -1,9 +1,10 @@
 ﻿using Slng.MFLApi.Model;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Text.Json;
+using Slng.MFLApi.Converter;
 
 namespace Slng.MFLApi
 {
@@ -15,10 +16,17 @@ namespace Slng.MFLApi
 
         private Dictionary<int, string> leagueHosts = new Dictionary<int, string>();
 
+        private JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions();
+
         public MFLApiClient(int year, bool cacheLeagueHost = true)
         {
             this.year = year;
             this.cacheLeagueHost = cacheLeagueHost;
+
+            jsonSerializerOptions.Converters.Add(new LongToStringConverter());
+            jsonSerializerOptions.Converters.Add(new IntToStringConverter());
+            jsonSerializerOptions.Converters.Add(new FloatToStringConverter());
+            jsonSerializerOptions.PropertyNameCaseInsensitive = false;
         }
 
         public async Task<MFLLeagueResponseBody> GetLeague(int league)
@@ -138,7 +146,7 @@ namespace Slng.MFLApi
             using (HttpClient httpClient = new HttpClient())
             {
                 var responseString = await httpClient.GetStringAsync(url);
-                return JsonConvert.DeserializeObject<TResponse>(responseString);
+                return JsonSerializer.Deserialize<TResponse>(responseString, jsonSerializerOptions);
             }
         }
 
