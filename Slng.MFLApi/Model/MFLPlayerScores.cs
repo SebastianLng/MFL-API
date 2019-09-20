@@ -18,7 +18,6 @@ namespace Slng.MFLApi.Model
     {
         public int week { get; set; }
 
-        [JsonConverter(typeof(ArrayOrSingleConverter))]
         public List<MFLPlayerScore> playerScore { get; set; }
     }
 
