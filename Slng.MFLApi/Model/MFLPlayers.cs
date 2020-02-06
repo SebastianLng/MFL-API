@@ -28,7 +28,7 @@ namespace Slng.MFLApi.Model
 
         public string name { get; set; }
 
-        public int id { get; set; }
+        public string id { get; set; }
 
         public string team { get; set; }
 

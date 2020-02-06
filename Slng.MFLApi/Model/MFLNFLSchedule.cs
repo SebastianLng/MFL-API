@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Slng.MFLApi.Utils;
+using System.Collections.Generic;
 
 namespace Slng.MFLApi.Model
 {
@@ -9,6 +11,7 @@ namespace Slng.MFLApi.Model
 
     public class MFLNFLScheduleResponse
     {
+        [JsonConverter(typeof(ArrayOrSingleConverter<MFLNFLMatchup>))]
         public List<MFLNFLMatchup> matchup { get; set; }
 
         public string week { get; set; }
@@ -20,6 +23,7 @@ namespace Slng.MFLApi.Model
 
         public string gameSecondsRemaining { get; set; }
 
+        [JsonConverter(typeof(ArrayOrSingleConverter<MFLNFLTeam>))]
         public List<MFLNFLTeam> team { get; set; }
     }
 

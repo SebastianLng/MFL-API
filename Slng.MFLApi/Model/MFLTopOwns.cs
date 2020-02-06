@@ -16,7 +16,7 @@ namespace Slng.MFLApi.Model
 
     public class MFLTopOwnsResponse
     {
-        public int week { get; set; }
+        public string week { get; set; }
 
         [JsonConverter(typeof(ArrayOrSingleConverter<MFLTopOwnsPlayer>))]
         public List<MFLTopOwnsPlayer> player { get; set; }
@@ -24,7 +24,7 @@ namespace Slng.MFLApi.Model
 
     public class MFLTopOwnsPlayer
     {
-        public int id { get; set; }
+        public string id { get; set; }
 
         public float percent { get; set; }
     }

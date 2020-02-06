@@ -24,7 +24,7 @@ namespace Slng.MFLApi.Model
 
     public class MFLPlayerScore
     {
-        public int id { get; set; }
+        public string id { get; set; }
 
         public int isAvailable { get; set; }
 

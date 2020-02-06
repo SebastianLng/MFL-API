@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Slng.MFLApi.Utils;
+using System.Collections.Generic;
 
 namespace Slng.MFLApi.Model
 {
@@ -27,7 +29,7 @@ namespace Slng.MFLApi.Model
 
         public string standingsSort { get; set; }
 
-        public int id { get; set; }
+        public string id { get; set; }
 
         public string minBid { get; set; }
 
@@ -94,6 +96,7 @@ namespace Slng.MFLApi.Model
     {
         public string count { get; set; }
 
+        [JsonConverter(typeof(ArrayOrSingleConverter<MFLLeagueFranchise>))]
         public List<MFLLeagueFranchise> franchise { get; set; }
     }
 

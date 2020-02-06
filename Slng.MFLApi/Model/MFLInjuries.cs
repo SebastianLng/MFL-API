@@ -18,7 +18,7 @@ namespace Slng.MFLApi.Model
     {
         public long timestamp { get; set; }
 
-        public int week { get; set; }
+        public string week { get; set; }
 
         [JsonConverter(typeof(ArrayOrSingleConverter<MFLInjury>))]
         public List<MFLInjury> injury { get; set; }
@@ -26,7 +26,7 @@ namespace Slng.MFLApi.Model
 
     public class MFLInjury
     {
-        public int id { get; set; }
+        public string id { get; set; }
 
         public string status { get; set; }
 
