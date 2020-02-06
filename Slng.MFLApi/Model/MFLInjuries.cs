@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Slng.MFLApi.Utils;
+using System.Collections.Generic;
 
 namespace Slng.MFLApi.Model
 {
@@ -16,14 +18,15 @@ namespace Slng.MFLApi.Model
     {
         public long timestamp { get; set; }
 
-        public int week { get; set; }
+        public string week { get; set; }
 
+        [JsonConverter(typeof(ArrayOrSingleConverter<MFLInjury>))]
         public List<MFLInjury> injury { get; set; }
     }
 
     public class MFLInjury
     {
-        public int id { get; set; }
+        public string id { get; set; }
 
         public string status { get; set; }
 

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Slng.MFLApi.Utils;
+using System.Collections.Generic;
 
 namespace Slng.MFLApi.Model
 {
@@ -16,6 +18,7 @@ namespace Slng.MFLApi.Model
     {
         public long timestamp { get; set; }
 
+        [JsonConverter(typeof(ArrayOrSingleConverter<MFLPlayer>))]
         public List<MFLPlayer> player { get; set; }
     }
 
@@ -25,7 +28,7 @@ namespace Slng.MFLApi.Model
 
         public string name { get; set; }
 
-        public int id { get; set; }
+        public string id { get; set; }
 
         public string team { get; set; }
 

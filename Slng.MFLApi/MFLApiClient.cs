@@ -4,16 +4,19 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Slng.MFLApi
 {
     public class MFLApiClient
     {
-        private readonly string baseApiUrl = "http://api.myfantasyleague.com";
+        private readonly string baseApiUrl = "https://api.myfantasyleague.com";
         private readonly int year;
-        private readonly bool cacheLeagueHost;
 
-        private Dictionary<int, string> leagueHosts = new Dictionary<int, string>();
+        // League specific
+        private readonly string nonHttpsBaseApiUrl = "http://api.myfantasyleague.com";
+        private readonly bool cacheLeagueHost;
+        private Dictionary<string, string> leagueHosts = new Dictionary<string, string>();
 
         public MFLApiClient(int year, bool cacheLeagueHost = true)
         {
@@ -21,11 +24,62 @@ namespace Slng.MFLApi
             this.cacheLeagueHost = cacheLeagueHost;
         }
 
+        public async Task<MFLPlayersReponseBody> GetPlayers(bool details = false)
+        {
+            return await Get<MFLPlayersReponseBody>($"{baseApiUrl}/{year}/export?TYPE=players&DETAILS={ (details ? 1 : 0 )}&JSON=1");
+        }
+
+        public async Task<MFLPlayersReponseBody> GetPlayers(IList<string> playerIds, bool details = false)
+        {
+            string encodedPlayers = WebUtility.UrlEncode(string.Join(",", playerIds));
+            return await Get<MFLPlayersReponseBody>($"{baseApiUrl}/{year}/export?TYPE=players&PLAYERS={encodedPlayers}&DETAILS={ (details ? 1 : 0)}&JSON=1");
+        }
+
+        public async Task<MFLInjuriesResponseBody> GetInjuries(int? week = null)
+        {
+            var url = $"{baseApiUrl}/{year}/export?TYPE=injuries&JSON=1";
+            if (week.HasValue)
+            {
+                url += "&W=" + week.Value;
+            }
+
+            var injuries = await Get<MFLInjuriesResponseBody>(url);
+            
+            // Fix invalid id result bug
+            injuries.injuries.injury = injuries.injuries.injury.Where(i => isValidId(i.id)).ToList();
+            return injuries;
+        }
+
+        public async Task<MFLTopOwnsResponseBody> GetTopOwns(int? week = null)
+        {
+            var url = $"{baseApiUrl}/{year}/export?TYPE=topOwns&JSON=1";
+            if (week.HasValue)
+            {
+                url += "&W=" + week.Value;
+            }
+
+            var topOwns = await Get<MFLTopOwnsResponseBody>(url);
+            // Fix invalid id result bug
+            topOwns.topOwns.player = topOwns.topOwns.player.Where(i => isValidId(i.id)).ToList();
+            return topOwns;
+        }
+
+        public async Task<MFLNFLScheduleResponseBody> GetNFLSchedule(int? week = null)
+        {
+            var url = $"{baseApiUrl}/{year}/export?TYPE=nflSchedule&JSON=1";
+            if (week.HasValue)
+            {
+                url += "&W=" + week.Value;
+            }
+
+            return await Get<MFLNFLScheduleResponseBody>(url);
+        }
+
         public async Task<MFLLeagueResponseBody> GetLeague(int league)
         {
-            var leagueResponse = await Get<MFLLeagueResponseBody>($"{baseApiUrl}/{year}/export?TYPE=league&L={league}&JSON=1");
+            var leagueResponse = await Get<MFLLeagueResponseBody>($"{nonHttpsBaseApiUrl}/{year}/export?TYPE=league&L={league}&JSON=1");
 
-            if  (cacheLeagueHost)
+            if (cacheLeagueHost)
             {
                 if (leagueHosts.ContainsKey(leagueResponse.league.id))
                 {
@@ -42,9 +96,9 @@ namespace Slng.MFLApi
 
         public async Task<MFLPlayerScoresResponseBody> GetPlayerScores(int league, int limit, string position = null, bool yearToDate = false)
         {
-            string baseUrl = await GetLeagueHost(league);
+            string baseLeagueUrl = await GetLeagueHost(league);
 
-            var url = $"{baseUrl}/{year}/export?TYPE=playerScores&L={league}&COUNT={limit}&JSON=1";
+            var url = $"{baseLeagueUrl}/{year}/export?TYPE=playerScores&L={league}&COUNT={limit}&JSON=1";
 
             if (!string.IsNullOrEmpty(position))
             {
@@ -63,9 +117,9 @@ namespace Slng.MFLApi
 
         public async Task<MFLPlayerScoresResponseBody> GetPlayerScoresByWeek(int league, int limit, int week, string position = null, bool useLeagueRules = false)
         {
-            string baseUrl = await GetLeagueHost(league);
+            string baseLeagueUrl = await GetLeagueHost(league);
 
-            var url = $"{baseUrl}/{year}/export?TYPE=playerScores&L={league}&COUNT={limit}&JSON=1";
+            var url = $"{baseLeagueUrl}/{year}/export?TYPE=playerScores&L={league}&COUNT={limit}&JSON=1";
 
             if (!string.IsNullOrEmpty(position))
             {
@@ -83,57 +137,13 @@ namespace Slng.MFLApi
             return await Get<MFLPlayerScoresResponseBody>(url);
         }
 
-        public async Task<MFLPlayersReponseBody> GetPlayers(bool details = false)
-        {
-            return await Get<MFLPlayersReponseBody>($"{baseApiUrl}/{year}/export?TYPE=players&DETAILS={ (details ? 1 : 0 )}&JSON=1");
-        }
-
-        public async Task<MFLPlayersReponseBody> GetPlayers(IList<int> playerIds, bool details = false)
-        {
-            string encodedPlayers = WebUtility.UrlEncode(string.Join(",", playerIds));
-            return await Get<MFLPlayersReponseBody>($"{baseApiUrl}/{year}/export?TYPE=players&PLAYERS={encodedPlayers}&DETAILS={ (details ? 1 : 0)}&JSON=1");
-        }
-
         public async Task<MFLFranchiseRosterResponseBody> GetFranchiseRoster(int league, string franchiseId)
         {
-            string baseUrl = await GetLeagueHost(league);
-            return await Get<MFLFranchiseRosterResponseBody>($"{baseUrl}/{year}/export?TYPE=rosters&L={league}&FRANCHISE={franchiseId}&JSON=1");
+            string baseLeagueUrl = await GetLeagueHost(league);
+            return await Get<MFLFranchiseRosterResponseBody>($"{baseLeagueUrl}/{year}/export?TYPE=rosters&L={league}&FRANCHISE={franchiseId}&JSON=1");
         }
 
-        public async Task<MFLInjuriesResponseBody> GetInjuries(int? week = null)
-        {
-            var url = $"{baseApiUrl}/{year}/export?TYPE=injuries&JSON=1";
-            if (week.HasValue)
-            {
-                url += "&W=" + week.Value;
-            }
-
-            return await Get<MFLInjuriesResponseBody>(url);
-        }
-
-        public async Task<MFLTopOwnsResponseBody> GetTopOwns(int? week = null)
-        {
-            var url = $"{baseApiUrl}/{year}/export?TYPE=topOwns&JSON=1";
-            if (week.HasValue)
-            {
-                url += "&W=" + week.Value;
-            }
-
-            return await Get<MFLTopOwnsResponseBody>(url);
-        }
-
-        public async Task<MFLNFLScheduleResponseBody> GetNFLSchedule(int? week = null)
-        {
-            var url = $"{baseApiUrl}/{year}/export?TYPE=nflSchedule&JSON=1";
-            if (week.HasValue)
-            {
-                url += "&W=" + week.Value;
-            }
-
-            return await Get<MFLNFLScheduleResponseBody>(url);
-        }
-
-        private async Task<TResponse> Get<TResponse>(string url)
+        protected async Task<TResponse> Get<TResponse>(string url)
         {
             using (HttpClient httpClient = new HttpClient())
             {
@@ -144,15 +154,20 @@ namespace Slng.MFLApi
 
         private async Task<string> GetLeagueHost(int league)
         {
-            if (cacheLeagueHost && leagueHosts.ContainsKey(league))
+            if (cacheLeagueHost && leagueHosts.ContainsKey(league.ToString()))
             {
-                return leagueHosts[league];
+                return leagueHosts[league.ToString()];
             }
             else
             {
                 var leagueResponse = await GetLeague(league);
                 return leagueResponse.league.baseURL;
             }
+        }
+
+        protected bool isValidId(string value)
+        {
+            return !string.IsNullOrEmpty(value) && value != "NULL";
         }
     }
 }

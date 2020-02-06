@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Slng.MFLApi.Utils;
+using System.Collections.Generic;
 
 namespace Slng.MFLApi.Model
 {
@@ -21,12 +23,13 @@ namespace Slng.MFLApi.Model
     {
         public string id { get; set; }
 
+        [JsonConverter(typeof(ArrayOrSingleConverter<MFLFranchisePlayer>))]
         public List<MFLFranchisePlayer> player { get; set; }
     }
 
     public class MFLFranchisePlayer
     {
-        public int id { get; set; }
+        public string id { get; set; }
 
         public string status { get; set; }
     }
