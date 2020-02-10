@@ -11,8 +11,8 @@ namespace Slng.MFLApi.Test
     {
         private const int testLeague = 63018;
         private const string testFranchise = "0003";
-        private readonly MFLApiClient mflApiClient = new MFLApiClient(DateTime.Now.Year - 1);
-        private readonly MFLApiClient lastYearMflApiClient = new MFLApiClient(DateTime.Now.Year - 2);
+        private readonly MFLApiClient mflApiClient = new MFLApiClient(DateTime.Now.Year);
+        private readonly MFLApiClient lastYearMflApiClient = new MFLApiClient(DateTime.Now.Year - 1);
 
         [TestMethod]
         public async Task GetLeague()
